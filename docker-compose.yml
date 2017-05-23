@@ -1,0 +1,54 @@
+---
+version: '3'
+
+services:
+  twittervotes:
+    image: ivanturianytsia/bp-twittervotes
+    networks:
+      - default
+    environment:
+      - SP_TWITTER_KEY=${SP_TWITTER_KEY}
+      - SP_TWITTER_SECRET=${SP_TWITTER_SECRET}
+      - SP_TWITTER_ACCESSTOKEN=${SP_TWITTER_ACCESSTOKEN}
+      - SP_TWITTER_ACCESSSECRET=${SP_TWITTER_ACCESSSECRET}
+  counter:
+    image: ivanturianytsia/bp-counter
+    networks:
+      - default
+  api:
+    image: ivanturianytsia/bp-api
+    ports:
+      - 8080:8080
+    networks:
+      - default
+  web:
+    image: ivanturianytsia/bp-web
+    environment:
+      - API_HOST=${API_HOST}
+    ports:
+      - 80:8080
+    networks:
+      - default
+  db:
+    image: mongo
+    networks:
+      - default
+  nsqlookupd:
+    image: nsqio/nsq
+    command: /nsqlookupd
+    networks:
+      - default
+  nsqd:
+    image: nsqio/nsq
+    command: /nsqd --lookupd-tcp-address=nsqlookupd:4160
+    networks:
+      - default
+  nsqadmin:
+    image: nsqio/nsq
+    command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
+    networks:
+      - default
+
+networks:
+  default:
+    external: false
