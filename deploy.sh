@@ -1,3 +1,5 @@
+#!/bin/bash
+
 function check_machine {
   docker-machine status $MACHINE_NAME
 }
@@ -12,8 +14,6 @@ function deploy_stack {
   export API_HOST=http://${HOST}:8080
   docker stack deploy -c docker-compose.yml socialpoll
 }
-
-HASH=$(git rev-parse HEAD)
 
 case $1 in
   check)
